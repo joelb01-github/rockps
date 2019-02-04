@@ -12,8 +12,9 @@ class App extends Component {
         { addr: '...loading', status: '...loading'} ],
       playerCount: 0,
       canBeFinalised: '...loading', // true if 2 players playing
-      input0: 0, // to check if problem here
-      input1: 0
+      input0: -1, // to check if problem here
+      input1: -1,
+      last: '...loading'
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -24,14 +25,19 @@ class App extends Component {
   async componentDidMount() {
     const playerCount = parseInt(await rockps.methods.getPlayerCount().call());
     const playerAddr = await rockps.methods.getPlayers().call();
+    const getLastest = await rockps.methods.latestWinner().call();
+
+    const last = (getLastest==='0x0000000000000000000000000000000000000000') 
+      ? 'game not played yet'
+      : getLastest;
     const players = [];
     switch(playerCount) {
       case 0:
-        players.push({ addr: '0x0', status:'has not played yet'});        players.push({ addr: '0x0', status:'has not played yet'});
+        players.push({ addr: 'N/A', status:'has not played yet'});        players.push({ addr: 'N/A', status:'has not played yet'});
         break;
       case 1:
         players.push({ addr: playerAddr[0], status:'has already played'});
-        players.push({ addr: '0x0', status:'has not played yet'});
+        players.push({ addr: 'N/A', status:'has not played yet'});
         break;
       case 2:
         players.push({ addr: playerAddr[0], status:'has already played'});
@@ -40,7 +46,9 @@ class App extends Component {
       default:
     };
     const canBeFinalised = (playerCount === 2) ? 'Yes' : 'No';
-    this.setState({ players, playerCount, canBeFinalised });
+
+
+    this.setState({ players, playerCount, canBeFinalised, last });
   }
 
   handleChange = (event, index) => {
@@ -78,14 +86,13 @@ class App extends Component {
     }
     const accounts = await web3.eth.getAccounts();
     const choice = (index===0) ? this.state.input0 : this.state.input1;
-    await rockps.methods.enterAndInput(choice)
-      .send({ from: accounts[0] });
+    await rockps.methods.enterAndInput(choice).send({ from: accounts[0] });
 
     const players = (index===0) 
-      ? [ {...this.state.players[0], status: 'Transaction sent!'}, 
+      ? [ {addr: accounts[0], status: 'Transaction sent!'}, 
         this.state.players[1] ]
-      : [...this.state.players[0],
-        {...this.state.players[1], status: 'Transaction sent!'}, ] ;
+      : [this.state.players[0],
+        {addr: accounts[0], status: 'Transaction sent!'}, ] ;
     const playerCount = this.state.playerCount + 1;
     const canBeFinalised = (playerCount===2) ? 'Yes' : 'No'
 
@@ -93,7 +100,19 @@ class App extends Component {
   };
 
   onClikFinal = async () => {
-    // TODO: change latestWinner in smart contract to be a uint (1 Alice, 2 Bob, 0 neutral)
+    const accounts = await web3.eth.getAccounts();
+    this.setState({ canBeFinalised: 'Fetching winner... '});
+    await rockps.methods.finaliseGame().send({ from: accounts[0] });
+    const last = await rockps.methods.latestWinner().call();
+    this.setState({ 
+      players: [
+        { addr: 'N/A', status:'has not played yet'}, 
+        { addr: 'N/A', status:'has not played yet'} ],
+      playerCount: 0,
+      canBeFinalised: '...No',
+      input0: -1, 
+      input1: -1,
+      last: last });
   }
 
   render() {
@@ -110,6 +129,7 @@ class App extends Component {
             <h2>Game status</h2>
             <p>Currently <span className='js'>{this.state.playerCount}</span> players have submitted their choice.</p>
             <p>Is the game ready to be finalised? <span className='js'>{this.state.canBeFinalised}</span></p>
+            <p>Latest winner: <span className='js'>{this.state.last}</span></p>
             <button onClick={this.onClikFinal}>Check winner</button>
           </div>
           <h2>Let's play...</h2>
@@ -122,6 +142,7 @@ class App extends Component {
         <div>
           <h4>{props.name}' side</h4>
           <p>{props.name}' status: <span className='js'>{this.state.players[props.index].status}</span></p>
+          <p>Contract used: <span className='js'>{this.state.players[props.index].addr}</span></p>
           <form onSubmit={(event) => this.handleSubmit(props.index, event)}>
             <label>Pick player's choice </label>
             <input type='text' value={this.handleValue(props.index)} onChange={(event) => this.handleChange(event, props.index)}></input>
