@@ -19,6 +19,9 @@ class App extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleValue = this.handleValue.bind(this);
+    this.handleFinalSubmit = this.handleFinalSubmit.bind(this);
+    this.newGame = this.newGame.bind(this);
   }
   
 
@@ -27,7 +30,7 @@ class App extends Component {
     const playerAddr = await rockps.methods.getPlayers().call();
     const getLastest = await rockps.methods.latestWinner().call();
 
-    const last = (getLastest==='0x0000000000000000000000000000000000000000') 
+    const last = (getLastest==='0x0000000000000000000000000000000000000000') // not working as 0x0 is both game never played and draw => add an indicator if game ever played and kep 0x0 as draw
       ? 'game not played yet'
       : getLastest;
     const players = [];
@@ -47,8 +50,20 @@ class App extends Component {
     };
     const canBeFinalised = (playerCount === 2) ? 'Yes' : 'No';
 
-
     this.setState({ players, playerCount, canBeFinalised, last });
+  }
+
+  newGame = (last) => {
+    this.setState = ({
+      players: [
+        { addr: 'N/A', status: 'has not played yet'}, 
+        { addr: 'N/A', status: 'has not played yet'} ],
+      playerCount: 0,
+      canBeFinalised: 'No',
+      input0: -1,
+      input1: -1,
+      last: 'last'
+    });
   }
 
   handleChange = (event, index) => {
@@ -99,20 +114,12 @@ class App extends Component {
     this.setState({ players, playerCount, canBeFinalised });
   };
 
-  onClikFinal = async () => {
+  handleFinalSubmit = async () => {
     const accounts = await web3.eth.getAccounts();
     this.setState({ canBeFinalised: 'Fetching winner... '});
     await rockps.methods.finaliseGame().send({ from: accounts[0] });
     const last = await rockps.methods.latestWinner().call();
-    this.setState({ 
-      players: [
-        { addr: 'N/A', status:'has not played yet'}, 
-        { addr: 'N/A', status:'has not played yet'} ],
-      playerCount: 0,
-      canBeFinalised: '...No',
-      input0: -1, 
-      input1: -1,
-      last: last });
+    this.newGame(last);
   }
 
   render() {
@@ -130,7 +137,7 @@ class App extends Component {
             <p>Currently <span className='js'>{this.state.playerCount}</span> players have submitted their choice.</p>
             <p>Is the game ready to be finalised? <span className='js'>{this.state.canBeFinalised}</span></p>
             <p>Latest winner: <span className='js'>{this.state.last}</span></p>
-            <button onClick={this.onClikFinal}>Check winner</button>
+            <button onClick={this.handleFinalSubmit}>Check winner</button>
           </div>
           <h2>Let's play...</h2>
         </div>
