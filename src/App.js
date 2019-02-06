@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import rockps from './contracts/rockps';
 import web3 from './web3/web3';
+import { Jumbotron, Button, Card, CardHeader, CardBody, CardText, CardFooter, Form, FormGroup, Label, Input,  } from 'reactstrap';
+
 class App extends Component {
 
   constructor(props) {
@@ -12,8 +14,8 @@ class App extends Component {
         { addr: '...loading', status: '...loading'} ],
       playerCount: 0,
       canBeFinalised: '...loading', // true if 2 players playing
-      input0: -1, // to check if problem here
-      input1: -1,
+      input0: 0, 
+      input1: 0,
       last: '...loading'
     };
 
@@ -22,17 +24,20 @@ class App extends Component {
     this.handleValue = this.handleValue.bind(this);
     this.handleFinalSubmit = this.handleFinalSubmit.bind(this);
     this.newGame = this.newGame.bind(this);
-  }
-  
+  };
 
   async componentDidMount() {
     const playerCount = parseInt(await rockps.methods.getPlayerCount().call());
     const playerAddr = await rockps.methods.getPlayers().call();
     const getLastest = await rockps.methods.latestWinner().call();
+    let gameCount = parseInt(await rockps.methods.gameCount().call());
 
-    const last = (getLastest==='0x0000000000000000000000000000000000000000') // not working as 0x0 is both game never played and draw => add an indicator if game ever played and kep 0x0 as draw
-      ? 'game not played yet'
-      : getLastest;
+    let last = 'game not played yet';
+    if (gameCount !== 0) { 
+      (getLastest === '0x0000000000000000000000000000000000000000') 
+        ? last = 'draw'
+        : last = getLastest ;
+    };
     const players = [];
     switch(playerCount) {
       case 0:
@@ -51,27 +56,25 @@ class App extends Component {
     const canBeFinalised = (playerCount === 2) ? 'Yes' : 'No';
 
     this.setState({ players, playerCount, canBeFinalised, last });
-  }
+  };
 
   newGame = (last) => {
-    this.setState = ({
+    this.setState({
       players: [
         { addr: 'N/A', status: 'has not played yet'}, 
         { addr: 'N/A', status: 'has not played yet'} ],
       playerCount: 0,
       canBeFinalised: 'No',
-      input0: -1,
-      input1: -1,
-      last: 'last'
+      input0: 0,
+      input1: 0,
+      last: last
     });
-  }
+  };
 
   handleChange = (event, index) => {
     const input = 'input' + index;
-    this.setState({
-      [input]: event.target.value
-    });
-  }
+    this.setState({ [input]: event.target.value });
+  };
 
   handleValue = (index) => {
     const input = 'input' + index;
@@ -98,7 +101,7 @@ class App extends Component {
         });
         break;
       default:
-    }
+    };
     const accounts = await web3.eth.getAccounts();
     const choice = (index===0) ? this.state.input0 : this.state.input1;
     await rockps.methods.enterAndInput(choice).send({ from: accounts[0] });
@@ -109,7 +112,7 @@ class App extends Component {
       : [this.state.players[0],
         {addr: accounts[0], status: 'Transaction sent!'}, ] ;
     const playerCount = this.state.playerCount + 1;
-    const canBeFinalised = (playerCount===2) ? 'Yes' : 'No'
+    const canBeFinalised = (playerCount===2) ? 'Yes' : 'No';
 
     this.setState({ players, playerCount, canBeFinalised });
   };
@@ -119,27 +122,32 @@ class App extends Component {
     this.setState({ canBeFinalised: 'Fetching winner... '});
     await rockps.methods.finaliseGame().send({ from: accounts[0] });
     const last = await rockps.methods.latestWinner().call();
-    this.newGame(last);
-  }
+
+    (last === '0x0000000000000000000000000000000000000000')
+      ? this.newGame('draw')
+      : this.newGame(last);
+  };
 
   render() {
 
     const Header = () => {
       return(
         <div>
-          <h1>Rock Paper Scissor Game</h1>
-          <div>
-            <p>Choose for both Alice and Bob (one after the other) what they should play</p>
-            <p>When the 2 players have sent their choice (button 'Send choice'), you can finalise the game (button 'Check winner')</p>
-          </div>
-          <div>
-            <h2>Game status</h2>
+        <Jumbotron>
+          <h1 className="display-3">Rock Paper Scissor</h1>
+          <p className="lead">This is a simple rock paper scissor game that uses Ethereum's Rinkeby network. You should have metamask installed and configured on Rinkeby.</p>
+          <hr className="my-2" />
+          <h4>Game status</h4>
             <p>Currently <span className='js'>{this.state.playerCount}</span> players have submitted their choice.</p>
             <p>Is the game ready to be finalised? <span className='js'>{this.state.canBeFinalised}</span></p>
-            <p>Latest winner: <span className='js'>{this.state.last}</span></p>
-            <button onClick={this.handleFinalSubmit}>Check winner</button>
-          </div>
-          <h2>Let's play...</h2>
+          <p className="lead">
+            <Button color="primary" onClick={this.handleFinalSubmit}>Check winner</Button>
+          </p>
+          <hr className="my-2" />
+            <h4>Instructions</h4>
+            <p>Choose for both Alice and Bob (one after the other) what they should play</p>
+            <p>When the 2 players have sent their choice (button 'Send choice'), you can finalise the game (button 'Check winner')</p>
+        </Jumbotron>
         </div>
       );
     }
@@ -147,24 +155,44 @@ class App extends Component {
     const Player = (props) => {
       return(
         <div>
-          <h4>{props.name}' side</h4>
-          <p>{props.name}' status: <span className='js'>{this.state.players[props.index].status}</span></p>
-          <p>Contract used: <span className='js'>{this.state.players[props.index].addr}</span></p>
-          <form onSubmit={(event) => this.handleSubmit(props.index, event)}>
-            <label>Pick player's choice </label>
-            <input type='text' value={this.handleValue(props.index)} onChange={(event) => this.handleChange(event, props.index)}></input>
-            <button>Send choice</button>
-          </form>
-          <h2>{this.state.messageAlice}</h2>
+          <Card>
+            <CardHeader tag="h4">{props.name}' side</CardHeader>
+            <CardBody>
+              <CardText>{props.name}' status: <span className='js'>{this.state.players[props.index].status}</span></CardText>
+              <CardText>Contract used: <span className='js'>{this.state.players[props.index].addr}</span></CardText>
+              <Form onSubmit={(event) => this.handleSubmit(props.index, event)}>
+                <FormGroup>
+                  <Label for="choice">Pick player's choice</Label>
+                  <Input type="select" id="choice" name="choice" 
+                  value={this.handleValue(props.index)} 
+                  onChange={(event) => this.handleChange(event, props.index)}>
+                    <option value="0">Rock</option>
+                    <option value="1">Paper</option>
+                    <option value="2">Scissor</option>
+                  </Input>
+                </FormGroup>
+                <Button>Submit</Button>
+              </Form>
+            </CardBody>
+            <CardFooter className="text-muted">Something...</CardFooter>
+          </Card>
         </div>
       );
     }
 
     return (
       <div className="App">
-        <Header />
-        <Player name='Alice' index={0}/>
-        <Player name='Bob' index={1}/>
+        <div className="container">
+          <Header />
+          <div className="row justify-content-center">
+            <div className="col-10 col-md-5 m-auto">
+              <Player name='Alice' index={0}/>
+            </div>
+            <div className="col-10 col-md-5 m-auto">
+              <Player name='Bob' index={1}/>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

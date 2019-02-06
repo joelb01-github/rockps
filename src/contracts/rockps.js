@@ -1,19 +1,33 @@
 import web3 from '../web3/web3';
 
-export const rockpsAddress = '0x4d33bbdaafd478beae4ec7fc8d590c2a99c70c5b';
+export const rockpsAddress = '0x8a1b93853b537a3696139b23fd9bf5f5da11ff9a';
 export const rockpsInterface = [
 	{
-		"constant": false,
-		"inputs": [
+		"constant": true,
+		"inputs": [],
+		"name": "latestWinner",
+		"outputs": [
 			{
-				"name": "choice",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "gameCount",
+		"outputs": [
+			{
+				"name": "",
 				"type": "uint8"
 			}
 		],
-		"name": "enterAndInput",
-		"outputs": [],
 		"payable": false,
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -26,23 +40,17 @@ export const rockpsInterface = [
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "getPlayerCount",
-		"outputs": [
+		"constant": false,
+		"inputs": [
 			{
-				"name": "",
-				"type": "uint256"
+				"name": "choice",
+				"type": "uint8"
 			}
 		],
+		"name": "enterAndInput",
+		"outputs": [],
 		"payable": false,
-		"stateMutability": "view",
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -62,16 +70,22 @@ export const rockpsInterface = [
 	{
 		"constant": true,
 		"inputs": [],
-		"name": "latestWinner",
+		"name": "getPlayerCount",
 		"outputs": [
 			{
 				"name": "",
-				"type": "address"
+				"type": "uint256"
 			}
 		],
 		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
 	}
 ];
 
