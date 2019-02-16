@@ -1,6 +1,6 @@
 import web3 from '../web3/web3';
 
-export const rockpsAddress = '0x8a1b93853b537a3696139b23fd9bf5f5da11ff9a';
+export const rockpsAddress = '0xb40336335bdff2f1d06f79f2d780376b622c45a0';
 export const rockpsInterface = [
 	{
 		"constant": true,
@@ -14,6 +14,34 @@ export const rockpsInterface = [
 		],
 		"payable": false,
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "reward",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "commit",
+				"type": "bytes32"
+			}
+		],
+		"name": "enterCommitment",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -40,20 +68,6 @@ export const rockpsInterface = [
 		"type": "function"
 	},
 	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "choice",
-				"type": "uint8"
-			}
-		],
-		"name": "enterAndInput",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"constant": true,
 		"inputs": [],
 		"name": "getPlayers",
@@ -68,9 +82,106 @@ export const rockpsInterface = [
 		"type": "function"
 	},
 	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "choice",
+				"type": "uint256"
+			},
+			{
+				"name": "nounce",
+				"type": "uint256"
+			}
+		],
+		"name": "reveal",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getRevealed",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool[2]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "choice",
+				"type": "uint256"
+			},
+			{
+				"name": "nounce",
+				"type": "uint256"
+			}
+		],
+		"name": "getKeccack0",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"payable": false,
+		"stateMutability": "pure",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "resetGame",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"constant": true,
 		"inputs": [],
 		"name": "getPlayerCount",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "candidate",
+				"type": "address"
+			}
+		],
+		"name": "notAlreadyIn",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "requiredValue",
 		"outputs": [
 			{
 				"name": "",
