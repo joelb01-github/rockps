@@ -15,10 +15,7 @@ const Header = () => {
 const Intro = () => {
   return (
     <div>
-      <div>
-        <h1 className="display-3">Rock Paper Scissor</h1>
-        <p className="lead">This is a simple rock paper scissor game that uses Ethereum's Rinkeby network. You should have metamask installed and configured on Rinkeby.</p>
-      </div>
+      <h1 className="display-3">Rock Paper Scissor</h1>
       <hr className="my-2" />
     </div>
   );
@@ -28,8 +25,8 @@ const Instructions = () => {
   return (
     <div>
       <h4>Instructions</h4>
-      <p>Choose for both Alice and Bob (one after the other) what they should play.</p>
-      <p>When the 2 players have sent their choice (button 'Send choice'), you can finalise the game (button 'Check winner' will appear).</p>
+      <p>Have Metamask installed (change account for each player)</p>
+      <p>1) Commit 2) Reveal 3) Finish</p>
     </div>
   );
 }

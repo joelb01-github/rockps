@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as ActionTypes from '../redux/actionTypes';
 import * as Status from '../redux/status';
 import { Button } from 'reactstrap';
+import { rockpsAddress } from '../contracts/rockps';
 
 const mapStateToProps = state => {
   return {
@@ -95,6 +96,7 @@ class GameStatus extends Component {
         <div>
           <div>
             <h4>Game status</h4>
+            <p>Contract deployed on Rinkeby at: {rockpsAddress}</p>
             <p>Last game winner: {this.props.status.last}</p>
             <p>Currently {this.props.status.playerCount} players have committed their choice.</p>
             <Controls />
