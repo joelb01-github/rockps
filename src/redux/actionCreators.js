@@ -29,8 +29,7 @@ export function* finaliseGame() {
     });
 
   } catch (error) {
-    // TODO: divide the above on update status + update players => use existing actions in case of failure
-    yield put({ type: ActionTypes.FINALISE_GAME_FAILED, payload: error.message });
+    yield put({ type: ActionTypes.STATUS_FAILED, payload: error.message });
   }
 }
 

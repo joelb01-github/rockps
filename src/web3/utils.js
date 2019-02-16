@@ -50,25 +50,18 @@ export const fetchPlayers = async () => {
 
 export const submitCommit = async (payload) => {
   const accounts = await web3.eth.getAccounts();
-  const playerCountBef = parseInt(await rockps.methods.getPlayerCount().call());
   const choice = payload.choice;
   const nounce = payload.nounce;
 
   const commit = web3.utils.soliditySha3(choice, nounce);
   // TODO: add address in the commit?
-
+  console.log("choice: ", choice, " nounce: ", nounce);
   await rockps.methods.enterCommitment(commit).send({ 
     from: accounts[0],
     value: 1000 
   });
-  const playerCountAft = parseInt(await rockps.methods.getPlayerCount().call());
   
-  if (playerCountAft === playerCountBef+1) {
-    return accounts[0];
-  }
-  else {
-    throw new Error('Player did not successfully commit');
-  }
+  return accounts[0];
 };
 
 export const revealCommit = async (payload) => {

@@ -1,6 +1,6 @@
 import web3 from '../web3/web3';
 
-export const rockpsAddress = '0xb40336335bdff2f1d06f79f2d780376b622c45a0';
+export const rockpsAddress = '0x66b28635864496703b520d4a67c3f40a04720114';
 export const rockpsInterface = [
 	{
 		"constant": true,
