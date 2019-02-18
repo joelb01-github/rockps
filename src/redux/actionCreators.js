@@ -77,7 +77,7 @@ export function* revealCommit(action) {
         act: Status.ACT.SENDING
       } 
     });
-    yield call(utils.revealCommit, action.payload);
+    const revealTime = yield call(utils.revealCommit, action.payload);
     const status = {
       ...action.payload.player,
       act: Status.ACT.SENT,
@@ -89,6 +89,10 @@ export function* revealCommit(action) {
         index: action.payload.index,
         status: status
       } 
+    });
+    yield put({
+      type: ActionTypes.UPDATE_STATUS_TIMER,
+      payload: revealTime
     });
     // Below not good -- check out how to update canBeFinalised
     const canBeFinalised = utils.canBeFinalised();

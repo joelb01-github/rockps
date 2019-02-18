@@ -1,6 +1,6 @@
 import web3 from '../web3/web3';
 
-export const rockpsAddress = '0x66b28635864496703b520d4a67c3f40a04720114';
+export const rockpsAddress = '0xdd450bdf401a01776a731fc4ba4689933bf45976';
 export const rockpsInterface = [
 	{
 		"constant": true,
@@ -10,6 +10,20 @@ export const rockpsInterface = [
 			{
 				"name": "",
 				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getBalance",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"payable": false,
@@ -68,6 +82,48 @@ export const rockpsInterface = [
 		"type": "function"
 	},
 	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "newTimer",
+				"type": "uint256"
+			}
+		],
+		"name": "changeTimer",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "firstRevealTime",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "timer",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"constant": true,
 		"inputs": [],
 		"name": "getPlayers",
@@ -75,6 +131,20 @@ export const rockpsInterface = [
 			{
 				"name": "",
 				"type": "address[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
 			}
 		],
 		"payable": false,
@@ -114,29 +184,6 @@ export const rockpsInterface = [
 		"type": "function"
 	},
 	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "choice",
-				"type": "uint256"
-			},
-			{
-				"name": "nounce",
-				"type": "uint256"
-			}
-		],
-		"name": "getKeccack0",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"payable": false,
-		"stateMutability": "pure",
-		"type": "function"
-	},
-	{
 		"constant": false,
 		"inputs": [],
 		"name": "resetGame",
@@ -149,6 +196,20 @@ export const rockpsInterface = [
 		"constant": true,
 		"inputs": [],
 		"name": "getPlayerCount",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getTimeLeft",
 		"outputs": [
 			{
 				"name": "",

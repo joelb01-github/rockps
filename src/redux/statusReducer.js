@@ -52,6 +52,14 @@ export const GameStatus = (state = {
           act: action.payload}
       };
 
+    case ActionTypes.UPDATE_STATUS_TIMER:
+      return {...state,
+        gameIsLoading: false,
+        gameErrMsg: null,
+        status: {...state.status,
+          revealTime: action.payload}
+      };
+
     default:
       return state;
   }

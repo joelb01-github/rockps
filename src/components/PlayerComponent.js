@@ -44,7 +44,7 @@ const Player = (props) => {
     }
     else if (player.pl2status1 === Status.ST1.NOT_COMMITTED) {
       return (
-        <CardText>{Status.ST2.PENDING}</CardText> 
+        <CardText>{Status.ACT.PENDING}</CardText> 
       );
     }
     else {

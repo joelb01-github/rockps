@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as ActionTypes from '../redux/actionTypes';
 import * as Status from '../redux/status';
+import { Timer } from './TimerComponent';
 import { Button } from 'reactstrap';
 import { rockpsAddress } from '../contracts/rockps';
 
@@ -100,6 +101,10 @@ class GameStatus extends Component {
             <p>Last game winner: {this.props.status.last}</p>
             <p>Currently {this.props.status.playerCount} players have committed their choice.</p>
             <Controls />
+            <Timer 
+              revealTime={this.props.status.revealTime} 
+              maxTime={this.props.status.maxTime}
+              players={this.props.players} />
           </div>
           <hr className="my-2" />
         </div>

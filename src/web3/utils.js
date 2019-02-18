@@ -54,8 +54,6 @@ export const submitCommit = async (payload) => {
   const nounce = payload.nounce;
 
   const commit = web3.utils.soliditySha3(choice, nounce);
-  // TODO: add address in the commit?
-  console.log("choice: ", choice, " nounce: ", nounce);
   await rockps.methods.enterCommitment(commit).send({ 
     from: accounts[0],
     value: 1000 
@@ -70,6 +68,7 @@ export const revealCommit = async (payload) => {
   const nounce = payload.nounce;
 
   await rockps.methods.reveal(choice,nounce).send({ from: accounts[0] });
+  return parseInt(await rockps.methods.firstRevealTime().call());
 };
 
 export const fetchStatus = async () => {
@@ -94,11 +93,16 @@ export const fetchStatus = async () => {
     }
   }
 
+  const revealTime = parseInt(await rockps.methods.firstRevealTime().call());
+  const maxTime = parseInt(await rockps.methods.timer().call());
+
   return({
     canBeFinalised: canBeFinalised,
     playerCount: playerCount,
     last: last,
-    act: Status.ACT.NONE
+    act: Status.ACT.NONE,
+    revealTime: revealTime,
+    maxTime: maxTime
   });
 };
 
@@ -122,7 +126,8 @@ export const resetStatus = (last) => {
     playerCount: 0,
     canBeFinalised: Status.NO,
     last: last,
-    act: Status.ACT.NONE
+    act: Status.ACT.NONE,
+    revealTime: 0
   });
 };
 
