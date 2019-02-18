@@ -2,7 +2,7 @@ import React from 'react';
 import * as Status from '../redux/status';
 
 const getTimeLeft = (revealTime, maxTime) => {
-  const dateNow = Date.now();
+  const dateNow = Date.now()/1000;
   console.log(dateNow);
   console.log(revealTime + maxTime);
   console.log( maxTime);
@@ -11,7 +11,7 @@ const getTimeLeft = (revealTime, maxTime) => {
   if (dateNow > revealTime + maxTime) {
     return 0;
   } else {
-    return (revealTime + maxTime - dateNow);
+    return Math.floor(revealTime + maxTime - dateNow);
   }
 }
 
@@ -26,8 +26,8 @@ export const Timer = (props) => {
       if (timeLeft > 0) {
         return (
           <div>
-            <p className="action">1st commit revealed on {this.props.revealTime}</p>
-            <p className="action">2nd reveal to happend before the next {getTimeLeft(props.revealTime, props.maxTime)}</p>
+            <p className="action">1st commit revealed on {(new Date(props.revealTime).toLocaleString('en-GB'))}</p>
+            <p className="action">2nd reveal to happen before the next {getTimeLeft(props.revealTime, props.maxTime)} seconds</p>
           </div>
         );
       } else {
